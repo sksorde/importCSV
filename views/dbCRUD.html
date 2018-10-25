@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="utf-8" />
+    <title>Bootstrap Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <script>
+        /*$(function () {
+            $("#divContent").load("layout.html");
+        });*/
+
+        $(function () {
+            $('.editlink').on('click', function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    method: "GET",
+                    url: "/fetch",
+                    data: {
+                        id: id
+                    },
+                }).done(function (data) {
+                    $('#id').val(data[0]['_id']);
+                    $('#firstName').val(data[0]['firstName']);
+                    $('#lastName').val(data[0]['lastName']);
+                    $("#subbtn").val('Edit User');
+                    $('#form1').attr('action', '/edit');
+                });
+            });
+        });
+    </script>
+
+
+</head>
+
+<body>
+    <div class="container"></div>
+    <script src="/javascripts/app.js"></script>
+    <div id="divContent"></div>
+    <h2>Welcome to NodeJS & MongoDB World!!</h2>
+    <div class="success"></div>
+    <div class="error"></div>
+
+    <form id="form1" name="form1" method="post" action="/add">
+        <input type="hidden" name="id" value="" id="id" />
+        <table border="1">
+            <tr>
+                <td>First Name</td>
+                <td><input type="text" id="firstName" name="firstName" required></td>
+            </tr>
+            <tr>
+                <td>Last Name</td>
+                <td><input type="text" id="lastName" name="lastName" required></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="submit" id="subbtn" name="Add User" value="Add User"></td>
+            </tr>
+        </table>
+    </form>
+    <div class="mini-layout">
+        <h2>
+            <p><a class="btn btn-primary" href="javascript:void(0)" id="fetchdata">Fetch Data</a>&nbsp;&nbsp;&nbsp;&nbsp;<a class="btn btn-primary" href="javascript:void(0)" id="importdata" style="margin-left: 15%;">Import CSV </a></p>
+            <p class="alert alert-success" id="message" style="display:none;"></p>
+        </h2>
+    </div>
+    <div>
+        <div class="row">
+            <div class="span12">
+                <div class="mini-layout">
+                    <h2>Users Listing<a href="/exporttocsv" style="margin-left: 15%;">Export to CSV</a></h2>
+                </div>
+            </div>
+        </div>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <th> ID </th>
+                    <th> First Name </th>
+                    <th> Last Name </th>
+                    <th> Action </th>
+                </tr>
+                {% if (data.length) %}
+                {% for item in data %}
+                <tr>
+                    <td> {{item['_id']}} </td>
+                    <td> {{item['firstName']}} </td>
+                    <td> {{item['lastName']}} </td>
+                    <td>
+                        <a id="editlink" class="editlink" href="javascript:void(0)" data-id='{{item["_id"]}}'> Edit </a>
+                        |
+                        <a href='/delete?id={{item["_id"]}}' onclick='return confirm("You are going to delete this record. Continue?")'> Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>
